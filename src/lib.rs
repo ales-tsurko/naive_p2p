@@ -65,6 +65,13 @@ impl Peer {
         Ok(())
     }
 
+    async fn queue_message(message: Message, queue: Arc<Mutex<Vec<Message>>>) {
+        loop {
+            sleep(Duration::from_secs(message.period)).await;
+            queue.lock().unwrap().push(message.clone());
+        }
+    }
+
     async fn be_client(&mut self) -> Result<()> {
         if let Some(socket) = self.outgoing.take() {
             let (reader, writer) = socket.into_split();
@@ -170,13 +177,6 @@ impl Peer {
                     .await
                     .map_err(|e| Error::WritingMessage(e.to_string()))?;
             }
-        }
-    }
-
-    async fn queue_message(message: Message, queue: Arc<Mutex<Vec<Message>>>) {
-        loop {
-            sleep(Duration::from_secs(message.period)).await;
-            queue.lock().unwrap().push(message.clone());
         }
     }
 }
