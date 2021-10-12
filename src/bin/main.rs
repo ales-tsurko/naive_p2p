@@ -15,11 +15,8 @@ async fn main() -> Result<()> {
         ColorChoice::Auto,
     )?;
 
-    let name = std::env::var("CARGO_PKG_NAME").unwrap();
-    let version = std::env::var("CARGO_PKG_VERSION").unwrap();
-
-    let matches = App::new(name)
-        .version(version.as_str())
+    let matches = App::new("naive_p2p")
+        .version("0.1.0")
         .author("Ales Tsurko <ales.tsurko@gmail.com>")
         .about("Naive implementation of a peer-to-peer network.")
         .arg(
@@ -65,9 +62,9 @@ async fn main() -> Result<()> {
     let connection: Option<SocketAddr> =
         matches.value_of("connect").map(&str::parse).transpose()?;
 
-    let mut server = Peer::new(port, message.to_string(), period, connection).await?;
+    let mut peer = Peer::new(port, message.to_string(), period, connection).await?;
 
-    server.listen().await?;
+    peer.listen().await?;
 
     Ok(())
 }
