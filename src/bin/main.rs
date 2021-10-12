@@ -15,8 +15,11 @@ async fn main() -> Result<()> {
         ColorChoice::Auto,
     )?;
 
-    let matches = App::new("naive p2p")
-        .version("0.1.0")
+    let name = std::env::var("CARGO_PKG_NAME").unwrap();
+    let version = std::env::var("CARGO_PKG_VERSION").unwrap();
+
+    let matches = App::new(name)
+        .version(version.as_str())
         .author("Ales Tsurko <ales.tsurko@gmail.com>")
         .about("Naive implementation of a peer-to-peer network.")
         .arg(
